@@ -3,6 +3,7 @@ from distutils.command.install_lib import install_lib
 import os
 import subprocess
 import sys
+from typing import List, Optional
 
 from rustypy.module import RustyModule
 
@@ -16,7 +17,7 @@ class RustCommand(Command):
     ]
 
     def initialize_options(self) -> None:
-        self.modules = []
+        self.modules: Optional[List[RustyModule]] = None
         self.release = True
         self.build_temp = None
 
@@ -69,6 +70,8 @@ class RustCommand(Command):
         self.copy_file(lib_path, ext_fullpath)
 
     def run(self) -> None:
+        if self.modules is None:
+            return
         for module in self.modules:
             self.compile(module)
         for module in self.modules:

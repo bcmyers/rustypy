@@ -8,7 +8,7 @@ class RustyModule:
         self.path = path
 
     @property
-    def lib_name(self) -> None:
+    def lib_name(self) -> str:
         prefix = {'win32': ''}.get(sys.platform, 'lib')
         extension = (
             {'darwin': '.dylib', 'win32': '.dll'}
