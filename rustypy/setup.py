@@ -1,6 +1,7 @@
-from distutils.cmd import Command
-from distutils.command.install_lib import install_lib
 import os
+from setuptools import Command
+from setuptools.command.develop import develop
+from setuptools.command.install_lib import install_lib
 import subprocess
 import sys
 from typing import List, Optional
@@ -10,7 +11,7 @@ from rustypy.module import RustyModule
 
 class RustCommand(Command):
 
-    description = "rust build command"
+    description = "build rust extension"
     user_options = [
         ('modules=', None, 'list of rust modules'),
         ('release=', None, 'boolean for --release flag')
@@ -19,13 +20,9 @@ class RustCommand(Command):
     def initialize_options(self) -> None:
         self.modules: Optional[List[RustyModule]] = None
         self.release = True
-        self.build_temp = None
 
     def finalize_options(self) -> None:
-        self.set_undefined_options(
-            'build',
-            ('build_temp', 'build_temp'),
-        )
+        pass
 
     def compile(self, module: RustyModule) -> None:
         args = ['Cargo', 'build']
@@ -81,7 +78,13 @@ class RustCommand(Command):
 build_rust = RustCommand
 
 
-class install_with_rust(install_lib):
+class develop_with_rust(develop):
+    def run(self) -> None:
+        super().run()
+        self.run_command('build_rust')
+
+
+class install_lib_with_rust(install_lib):
     def build(self) -> None:
         install_lib.build(self)
         self.run_command('build_rust')
