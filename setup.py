@@ -1,18 +1,19 @@
 import os
 from pip.req import parse_requirements
 from setuptools import find_packages, setup
+from typing import List
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-def long_description():
+def long_description() -> str:
     path = os.path.join(BASE_DIR, 'README.rst')
     with open(path, 'r') as f:
         long_description = f.read()
     return long_description
 
 
-def requirements():
+def requirements() -> List[str]:
     path = os.path.join(BASE_DIR, 'requirements', 'production.txt')
     return [str(r.req) for r in parse_requirements(path, session=False)]
 

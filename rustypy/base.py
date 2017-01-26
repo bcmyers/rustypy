@@ -9,4 +9,4 @@ class RustyBase():
         self.module = rusty_module
         self.ffi = cffi.FFI()
         self.ffi.cdef(self.module._header_str)
-        self.lib = self.ffi.dlopen(str(self.module._lib_path()))
+        self.lib = self.ffi.dlopen(self.module._lib_path)

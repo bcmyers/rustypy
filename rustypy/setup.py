@@ -24,6 +24,14 @@ class RustCommand(Command):
     def finalize_options(self) -> None:
         pass
 
+    def run(self) -> None:
+        if self.modules is None:
+            return
+        for module in self.modules:
+            self.compile(module)
+        for module in self.modules:
+            self.deploy(module)
+
     def compile(self, module: RustyModule) -> None:
         args = ['Cargo', 'build']
         if self.release is True:
@@ -59,21 +67,12 @@ class RustCommand(Command):
             module.path,
             'target',
             mode,
-            module.lib_name
+            module._lib_name
         )
         build_ext = self.get_finalized_command('build_ext')
         ext_fullpath = build_ext.get_ext_fullpath(module.name)
         self.mkpath(os.path.dirname(ext_fullpath))
         self.copy_file(lib_path, ext_fullpath)
-
-    def run(self) -> None:
-        if self.modules is None:
-            return
-        for module in self.modules:
-            self.compile(module)
-        for module in self.modules:
-            self.deploy(module)
-
 
 build_rust = RustCommand
 
